@@ -74,8 +74,54 @@ void freeClient(redisClient *c) {
 
     zfree(c);
 }
+
+
+void sendReplyToClient(aeEventLoop *el, int fd, void *privdata, int mask){
+    redisClient *c = privdata;
+    int nwritten = 0;
+    REDIS_NOTUSED(el);
+    REDIS_NOTUSED(mask);
+    
+    while (c->bufpos>0) {
+        nwritten = write(fd,c->buf+c->sentlen,c->bufpos-c->sentlen);
+        // 出错则跳出
+        if (nwritten <= 0) break;
+        
+        c->sentlen += nwritten;
+        
+        if (c->sentlen == c->bufpos) {
+            c->bufpos = 0;
+            c->sentlen = 0;
+        }
+    }
+
+    // 写入出错检查
+    if (nwritten == -1) {
+        if (errno == EAGAIN) {
+            nwritten = 0;
+        } else {
+            redisLog(REDIS_VERBOSE,"Error writing to client: %s", strerror(errno));
+            freeClient(c);
+            return;
+        }
+    }
+    
+    if (c->bufpos == 0){
+        c->sentlen = 0;
+        aeDeleteFileEvent(server.el,c->fd,AE_WRITABLE);
+    }
+}
+
+
 void processInputBuffer(redisClient *c) {
     printf("process buff:%s\n",c->querybuf);
+    
+    memcpy(c->buf,"hello",5);
+    c->bufpos = 5;
+    
+    if(aeCreateFileEvent(server.el, c->fd, AE_WRITABLE,sendReplyToClient,c) == AE_ERR){
+        freeClient(c);
+    }
 }
 /*
  * 读取客户端的查询缓冲区内容
@@ -130,6 +176,7 @@ redisClient *createClient(int fd) {
 
     // 分配空间
     redisClient *c = zmalloc(sizeof(redisClient));
+    memset(c,0,sizeof(*c));
 
     /* passing -1 as fd it is possible to create a non connected client.
      * This is useful since all the Redis commands needs to be executed

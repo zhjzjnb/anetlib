@@ -44,11 +44,15 @@
 #define REDIS_IP_STR_LEN INET6_ADDRSTRLEN
 
 #define REDIS_IOBUF_LEN         (1024*16)  /* Generic I/O buffer size */
-
+#define REDIS_REPLY_CHUNK_BYTES (16*1024) /* 16k output buffer */
 typedef struct redisClient {
     // 套接字描述符
     int fd;
     char querybuf[REDIS_IOBUF_LEN];
+    
+    char buf[REDIS_REPLY_CHUNK_BYTES];
+    int sentlen;
+    int bufpos;
 } redisClient;
 
 
@@ -93,6 +97,7 @@ redisClient *createClient(int fd);
 void freeClient(redisClient *c);
 void acceptTcpHandler(aeEventLoop *el, int fd, void *privdata, int mask);
 void readQueryFromClient(aeEventLoop *el, int fd, void *privdata, int mask);
+void sendReplyToClient(aeEventLoop *el, int fd, void *privdata, int mask);
 extern struct redisServer server;
 
 #endif /* netlib_h */
