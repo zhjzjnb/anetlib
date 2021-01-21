@@ -8,6 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		481749EE25B91B9D007FC5D5 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 481749ED25B91B9D007FC5D5 /* main.c */; };
+		481749FE25B91BBE007FC5D5 /* ae_kqueue.c in Sources */ = {isa = PBXBuildFile; fileRef = 481749F925B91BBE007FC5D5 /* ae_kqueue.c */; };
+		481749FF25B91BBE007FC5D5 /* ae.c in Sources */ = {isa = PBXBuildFile; fileRef = 481749FA25B91BBE007FC5D5 /* ae.c */; };
+		48174A0425B91BEE007FC5D5 /* zmalloc.c in Sources */ = {isa = PBXBuildFile; fileRef = 48174A0225B91BEE007FC5D5 /* zmalloc.c */; };
+		48174A0A25B91D6E007FC5D5 /* anet.c in Sources */ = {isa = PBXBuildFile; fileRef = 48174A0825B91D6E007FC5D5 /* anet.c */; };
+		48174A0E25B91FDD007FC5D5 /* netlib.c in Sources */ = {isa = PBXBuildFile; fileRef = 48174A0D25B91FDD007FC5D5 /* netlib.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +30,20 @@
 /* Begin PBXFileReference section */
 		481749EA25B91B9D007FC5D5 /* anetlib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = anetlib; sourceTree = BUILT_PRODUCTS_DIR; };
 		481749ED25B91B9D007FC5D5 /* main.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = main.c; sourceTree = "<group>"; };
+		481749F525B91BBE007FC5D5 /* ae_epoll.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ae_epoll.c; sourceTree = "<group>"; };
+		481749F625B91BBE007FC5D5 /* ae.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ae.h; sourceTree = "<group>"; };
+		481749F725B91BBE007FC5D5 /* ae_select.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ae_select.c; sourceTree = "<group>"; };
+		481749F825B91BBE007FC5D5 /* ae_evport.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ae_evport.c; sourceTree = "<group>"; };
+		481749F925B91BBE007FC5D5 /* ae_kqueue.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ae_kqueue.c; sourceTree = "<group>"; };
+		481749FA25B91BBE007FC5D5 /* ae.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = ae.c; sourceTree = "<group>"; };
+		48174A0225B91BEE007FC5D5 /* zmalloc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = zmalloc.c; sourceTree = "<group>"; };
+		48174A0325B91BEE007FC5D5 /* zmalloc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zmalloc.h; sourceTree = "<group>"; };
+		48174A0625B91C3B007FC5D5 /* config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
+		48174A0825B91D6E007FC5D5 /* anet.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = anet.c; sourceTree = "<group>"; };
+		48174A0925B91D6E007FC5D5 /* anet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = anet.h; sourceTree = "<group>"; };
+		48174A0C25B91FDD007FC5D5 /* netlib.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = netlib.h; sourceTree = "<group>"; };
+		48174A0D25B91FDD007FC5D5 /* netlib.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = netlib.c; sourceTree = "<group>"; };
+		48174A1025B92058007FC5D5 /* fmacros.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fmacros.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,7 +76,21 @@
 		481749EC25B91B9D007FC5D5 /* anetlib */ = {
 			isa = PBXGroup;
 			children = (
+				48174A1025B92058007FC5D5 /* fmacros.h */,
+				48174A0825B91D6E007FC5D5 /* anet.c */,
+				48174A0925B91D6E007FC5D5 /* anet.h */,
+				48174A0625B91C3B007FC5D5 /* config.h */,
+				48174A0225B91BEE007FC5D5 /* zmalloc.c */,
+				48174A0325B91BEE007FC5D5 /* zmalloc.h */,
+				481749F525B91BBE007FC5D5 /* ae_epoll.c */,
+				481749F825B91BBE007FC5D5 /* ae_evport.c */,
+				481749F925B91BBE007FC5D5 /* ae_kqueue.c */,
+				481749F725B91BBE007FC5D5 /* ae_select.c */,
+				481749FA25B91BBE007FC5D5 /* ae.c */,
+				481749F625B91BBE007FC5D5 /* ae.h */,
 				481749ED25B91B9D007FC5D5 /* main.c */,
+				48174A0C25B91FDD007FC5D5 /* netlib.h */,
+				48174A0D25B91FDD007FC5D5 /* netlib.c */,
 			);
 			path = anetlib;
 			sourceTree = "<group>";
@@ -118,6 +151,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				48174A0A25B91D6E007FC5D5 /* anet.c in Sources */,
+				48174A0425B91BEE007FC5D5 /* zmalloc.c in Sources */,
+				481749FE25B91BBE007FC5D5 /* ae_kqueue.c in Sources */,
+				48174A0E25B91FDD007FC5D5 /* netlib.c in Sources */,
+				481749FF25B91BBE007FC5D5 /* ae.c in Sources */,
 				481749EE25B91B9D007FC5D5 /* main.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
