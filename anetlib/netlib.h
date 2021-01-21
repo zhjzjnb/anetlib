@@ -22,6 +22,10 @@
 #include "ae.h"
 #include "anet.h"
 
+
+#define REDIS_OK                0
+#define REDIS_ERR               -1
+
 #define REDIS_DEFAULT_SYSLOG_IDENT "netlib"
 #define REDIS_DEFAULT_TCP_KEEPALIVE 0
 #define REDIS_DEFAULT_LOGFILE ""
@@ -46,6 +50,9 @@
 #define REDIS_IOBUF_LEN         (1024*16)  /* Generic I/O buffer size */
 #define REDIS_REPLY_CHUNK_BYTES (16*1024) /* 16k output buffer */
 typedef struct redisClient {
+    
+    
+    
     // 套接字描述符
     int fd;
     char querybuf[REDIS_IOBUF_LEN];
