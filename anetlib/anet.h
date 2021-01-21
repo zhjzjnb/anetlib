@@ -42,7 +42,7 @@
 #if defined(__sun)
 #define AF_LOCAL AF_UNIX
 #endif
-
+int anetTcpRawConnect(char *hostname,int port);
 int anetTcpConnect(char *err, char *addr, int port);
 int anetTcpNonBlockConnect(char *err, char *addr, int port);
 int anetTcpNonBlockBindConnect(char *err, char *addr, int port, char *source_addr);

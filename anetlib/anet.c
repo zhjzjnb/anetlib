@@ -260,6 +260,45 @@ static int anetCreateSocket(char *err, int domain) {
     return s;
 }
 
+
+int anetTcpRawConnect(char *hostname,int port){
+    struct sockaddr_in sock;
+    struct hostent *hoste;
+    int fd;
+    int lr;
+
+    bzero(&sock, sizeof(sock));
+    sock.sin_family = AF_INET;
+    sock.sin_port = htons(port);
+
+
+    sock.sin_addr.s_addr = inet_addr(hostname);
+    if (sock.sin_addr.s_addr == -1) {
+
+        hoste = gethostbyname(hostname);
+        if (hoste == NULL) {
+            printf("获取主机名: %s\n", hostname);
+            return -1;
+        }
+
+        memcpy((void *) &sock.sin_addr.s_addr, hoste->h_addr, sizeof(struct in_addr));
+    }
+
+
+    fd = socket(AF_INET, SOCK_STREAM, 0);
+    if (fd == -1) {
+        printf("Cannot Create Socket(%s errno:%d)\n", strerror(errno), errno);
+        return -1;
+    }
+
+    lr = connect(fd, (struct sockaddr *) &sock, sizeof(struct sockaddr_in));
+    if (lr != 0) {
+        printf("Cannot connect. (%s errno:%d)\n", strerror(errno), errno);
+        return -1;
+    }
+    return fd;
+}
+
 // 通用连接创建函数，被其他高层函数所调用
 #define ANET_CONNECT_NONE 0
 #define ANET_CONNECT_NONBLOCK 1

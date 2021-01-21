@@ -188,8 +188,9 @@ int main(int argc, const char * argv[]) {
     
     
     char err[256]={0};
+//    int fd = anetTcpRawConnect("127.0.0.1",10001);
     int fd = anetTcpNonBlockConnect(err,"127.0.0.1",6379);
-//    int fd = anetTcpConnect(err,"127.0.0.1",6379);
+//    int fd = anetTcpConnect(err,"127.0.0.1",10001);
     printf("fd:%d\n",fd);
     
     if (aeCreateFileEvent(server.el,fd,AE_READABLE|AE_WRITABLE,onConnectRemote,NULL) ==AE_ERR){
