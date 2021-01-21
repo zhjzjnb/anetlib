@@ -21,10 +21,13 @@
 
 #include "ae.h"
 #include "anet.h"
-
+#include "adlist.h"
 
 #define REDIS_OK                0
 #define REDIS_ERR               -1
+
+
+#define REDIS_DEFAULT_HZ        10      /* Time interrupt calls/sec. */
 
 #define REDIS_DEFAULT_SYSLOG_IDENT "netlib"
 #define REDIS_DEFAULT_TCP_KEEPALIVE 0
@@ -49,6 +52,12 @@
 
 #define REDIS_IOBUF_LEN         (1024*16)  /* Generic I/O buffer size */
 #define REDIS_REPLY_CHUNK_BYTES (16*1024) /* 16k output buffer */
+
+
+#define run_with_period(_ms_) if ((_ms_ <= 1000/server.hz) || !(server.cronloops%((_ms_)/(1000/server.hz))))
+#define redisAssert(_e) ( (_e)?(void)0:(redisLog(REDIS_WARNING,"file:%s line:%d\n %s",__FILE__,__LINE__,#_e),0))
+#define redisPanic(_e) do{ redisLog(REDIS_WARNING,"file:%s line:%d\n %s",__FILE__,__LINE__,#_e);exit(1);}while(0)
+
 typedef struct redisClient {
     
     
@@ -74,6 +83,9 @@ struct redisServer {
     int tcpkeepalive;
     
     
+    // 一个链表，保存了所有客户端状态结构
+    list *clients;              /* List of active clients */
+    
     // 网络错误
     char neterr[ANET_ERR_LEN];   /* Error buffer for anet.c */
     
@@ -87,6 +99,9 @@ struct redisServer {
     
     // 日志可见性
     int verbosity;                  /* Loglevel in redis.conf */
+    
+    int hz;
+    int cronloops;
 };
 
 

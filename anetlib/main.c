@@ -12,7 +12,7 @@
 #include "anet.h"
 #include "zmalloc.h"
 
-#define redisPanic(_e) do{ redisLog(REDIS_WARNING,"file:%s line:%d\n %s",__FILE__,__LINE__,#_e);exit(1);}while(0)
+
 
 void initServerConfig(void){
     server.tcp_backlog = REDIS_TCP_BACKLOG;
@@ -23,6 +23,10 @@ void initServerConfig(void){
     server.syslog_ident = zstrdup(REDIS_DEFAULT_SYSLOG_IDENT);
     server.syslog_facility = LOG_LOCAL0;
     server.tcpkeepalive = 1;
+    server.cronloops = 0;
+    server.hz = REDIS_DEFAULT_HZ;
+    
+    server.clients = listCreate();
 }
 
 //void connectHost(char *hostname, unsigned short port){
@@ -74,7 +78,7 @@ void readFromRemote(aeEventLoop *el, int fd, void *privdata, int mask){
     char buff[256]={0};
     int nread = read(fd,buff,sizeof(buff));
     
-    printf("buff len:%d is:%s",nread,buff);
+    printf("buff len:%d is:%s\n",nread,buff);
 }
 
 
@@ -122,6 +126,34 @@ error:
     return;
 }
 
+int serverCron(struct aeEventLoop *eventLoop, long long id, void *clientData) {
+    
+    run_with_period(3*1000) {
+        printf("time:%d  clients:%d\n",time(0),listLength(server.clients));
+        
+        listIter *iter = listGetIterator(server.clients,AL_START_HEAD);
+        listNode *node;
+//        listNode *head = listFirst(server.clients);
+        while ((node = listNext(iter)) != NULL) {
+            redisClient *c = listNodeValue(node);
+            printf("cccc:%d\n",c->fd);
+        
+            c->bufpos = sprintf(c->buf,"tick:%d\n",server.cronloops);
+            c->sentlen = 0;
+            
+            if(aeCreateFileEvent(server.el, c->fd, AE_WRITABLE,sendReplyToClient,c) == AE_ERR){
+                freeClient(c);
+            }
+        
+        }
+    
+        listReleaseIterator(iter);
+    }
+    
+    server.cronloops++;
+    return 1000/server.hz;
+}
+
 
 int main(int argc, const char * argv[]) {
 
@@ -164,6 +196,13 @@ int main(int argc, const char * argv[]) {
         close(fd);
         redisLog(REDIS_WARNING,"Can't create readable event for SYNC");
         return REDIS_ERR;
+    }
+    
+    
+    
+    if(aeCreateTimeEvent(server.el, 1, serverCron, NULL, NULL) == AE_ERR) {
+        redisPanic("Can't create the serverCron time event.");
+        exit(1);
     }
     
     

@@ -70,6 +70,12 @@ void freeClient(redisClient *c) {
         aeDeleteFileEvent(server.el,c->fd,AE_READABLE);
         aeDeleteFileEvent(server.el,c->fd,AE_WRITABLE);
         close(c->fd);
+        
+        
+        listNode *ln = listSearchKey(server.clients,c);
+        redisAssert(ln != NULL);
+        listDelNode(server.clients,ln);
+        
     }
 
     zfree(c);
@@ -205,6 +211,9 @@ redisClient *createClient(int fd) {
 
     // 套接字
     c->fd = fd;
+    
+    listAddNodeTail(server.clients,c);
+    
     // 返回客户端
     return c;
 }
