@@ -1,9 +1,3 @@
-//
-//  netlib.h
-//  anetlib
-//
-//  Created by jk on 2021/1/21.
-//
 
 #ifndef netlib_h
 #define netlib_h
@@ -29,7 +23,7 @@
 
 #define REDIS_DEFAULT_HZ        10      /* Time interrupt calls/sec. */
 
-#define REDIS_DEFAULT_SYSLOG_IDENT "netlib"
+#define REDIS_DEFAULT_SYSLOG_IDENT "anetlib"
 #define REDIS_DEFAULT_TCP_KEEPALIVE 0
 #define REDIS_DEFAULT_LOGFILE ""
 #define REDIS_DEFAULT_SYSLOG_ENABLED 0
@@ -58,10 +52,10 @@
 #define redisAssert(_e) ( (_e)?(void)0:(redisLog(REDIS_WARNING,"file:%s line:%d\n %s",__FILE__,__LINE__,#_e),0))
 #define redisPanic(_e) do{ redisLog(REDIS_WARNING,"file:%s line:%d\n %s",__FILE__,__LINE__,#_e);exit(1);}while(0)
 
+typedef struct redisClient redisClient;
+
+typedef void aeNewClientProc(redisClient *c);
 typedef struct redisClient {
-    
-    
-    
     // 套接字描述符
     int fd;
     char querybuf[REDIS_IOBUF_LEN];
@@ -102,7 +96,14 @@ struct redisServer {
     
     int hz;
     int cronloops;
+    
+    aeNewClientProc *newClientProc;
+    aeFileProc *readProc;
+    aeFileProc *writeProc;
 };
+
+
+
 
 
 

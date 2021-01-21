@@ -1,9 +1,3 @@
-//
-//  main.c
-//  anetlib
-//
-//  Created by jk on 2021/1/21.
-//
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,7 +6,9 @@
 #include "anet.h"
 #include "zmalloc.h"
 
-
+void newClientProc(redisClient *c){
+    
+}
 
 void initServerConfig(void){
     server.tcp_backlog = REDIS_TCP_BACKLOG;
@@ -25,47 +21,10 @@ void initServerConfig(void){
     server.tcpkeepalive = 1;
     server.cronloops = 0;
     server.hz = REDIS_DEFAULT_HZ;
-    
     server.clients = listCreate();
+    server.newClientProc = newClientProc;
+    server.readProc = readQueryFromClient;
 }
-
-//void connectHost(char *hostname, unsigned short port){
-//    struct sockaddr_in sock;
-//    struct hostent *hoste;
-//    int fd;
-//    int lr;
-//
-//    bzero(&sock, sizeof(sock));
-//    sock.sin_family = AF_INET;
-//    sock.sin_port = htons(port);
-//
-//
-//    sock.sin_addr.s_addr = inet_addr(hostname);
-//    if (sock.sin_addr.s_addr == -1) {
-//
-//     hoste = gethostbyname(hostname);
-//     if (hoste == NULL) {
-//         print("获取主机名: %s\n", hostname);
-//         return -1;
-//     }
-//
-//     memcpy((void *) &sock.sin_addr.s_addr, hoste->h_addr, sizeof(struct in_addr));
-//    }
-//
-//
-//    fd = socket(AF_INET, SOCK_STREAM, 0);
-//    if (fd == -1) {
-//     print("Cannot Create Socket(%s errno:%d)\n", strerror(errno), errno);
-//     return -1;
-//    }
-//
-//    lr = connect(fd, (struct sockaddr *) &sock, sizeof(struct sockaddr_in));
-//    if (lr != 0) {
-//     print("Cannot connect. (%s errno:%d)\n", strerror(errno), errno);
-//     return -1;
-//    }
-//    return fd;
-//}
 
 
 void sendToRemote(aeEventLoop *el, int fd, void *privdata, int mask){
@@ -112,9 +71,6 @@ void onConnectRemote(aeEventLoop *el, int fd, void *privdata, int mask) {
         redisLog(REDIS_WARNING,"Can't create readable event for SYNC");
         return;
     }
-    
-    
-    
     int nwritten = write(fd,"self",4);
     
     printf("onconnect nwritten:%d\n",nwritten);
@@ -165,13 +121,10 @@ int main(int argc, const char * argv[]) {
         if (port>0) {
             server.port = port;
         }else{
-            redisPanic("error port. ./socket-server port");
+            redisPanic("error port. ./anetlib port");
         }
         
     }
-    
-   
-    
     
     server.el = aeCreateEventLoop(1024);
     
@@ -199,17 +152,12 @@ int main(int argc, const char * argv[]) {
         return REDIS_ERR;
     }
     
-    
-    
     if(aeCreateTimeEvent(server.el, 1, serverCron, NULL, NULL) == AE_ERR) {
         redisPanic("Can't create the serverCron time event.");
         exit(1);
     }
-    
-    
     printf("simple redis network model listen on:%d\n",server.port);
     aeMain(server.el);
-    
     // 服务器关闭，停止事件循环
     aeDeleteEventLoop(server.el);
     return 0;

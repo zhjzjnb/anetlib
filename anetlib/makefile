@@ -4,8 +4,8 @@ TARGET_ARCH=$(shell uname)
 LINUX=Linux
 MACOS=Darwin
 
-PROG=socket-server
-SRC=zmalloc.c netlib.c main.c anet.c ae.c
+PROG=anetlib
+SRC=zmalloc.c netlib.c main.c anet.c ae.c adlist.c
 
 ifeq ($(TARGET_ARCH), $(MACOS))
 	SRC += ae_kqueue.c

@@ -1,9 +1,3 @@
-//
-//  netlib.c
-//  anetlib
-//
-//  Created by jk on 2021/1/21.
-//
 
 #include "netlib.h"
 #include "zmalloc.h"
@@ -201,7 +195,7 @@ redisClient *createClient(int fd) {
         if (server.tcpkeepalive)
             anetKeepAlive(NULL,fd,server.tcpkeepalive);
         // 绑定读事件到事件 loop （开始接收命令请求）
-        if (aeCreateFileEvent(server.el,fd,AE_READABLE,readQueryFromClient, c) == AE_ERR)
+        if (aeCreateFileEvent(server.el,fd,AE_READABLE,server.readProc, c) == AE_ERR)
         {
             close(fd);
             zfree(c);
@@ -222,12 +216,11 @@ static void acceptCommonHandler(int fd, int flags) {
     
     redisClient *c;
     if ((c = createClient(fd)) == NULL) {
-        redisLog(REDIS_WARNING,
-            "Error registering fd event for the new client: %s (fd=%d)",
-            strerror(errno),fd);
+        redisLog(REDIS_WARNING,"Error registering fd event for the new client: %s (fd=%d)",strerror(errno),fd);
         close(fd); /* May be already closed, just ignore errors */
         return;
     }
+    server.newClientProc(c);
 }
 #define MAX_ACCEPTS_PER_CALL 1000
 void acceptTcpHandler(aeEventLoop *el, int fd, void *privdata, int mask) {
