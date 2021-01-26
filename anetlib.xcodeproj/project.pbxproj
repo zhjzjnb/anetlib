@@ -14,6 +14,7 @@
 		48174A0A25B91D6E007FC5D5 /* anet.c in Sources */ = {isa = PBXBuildFile; fileRef = 48174A0825B91D6E007FC5D5 /* anet.c */; };
 		48174A0E25B91FDD007FC5D5 /* netlib.c in Sources */ = {isa = PBXBuildFile; fileRef = 48174A0D25B91FDD007FC5D5 /* netlib.c */; };
 		48174A1425B96194007FC5D5 /* adlist.c in Sources */ = {isa = PBXBuildFile; fileRef = 48174A1225B96194007FC5D5 /* adlist.c */; };
+		48EC0CF625C009C500F2774A /* sds.c in Sources */ = {isa = PBXBuildFile; fileRef = 48EC0CF525C009C500F2774A /* sds.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -47,6 +48,8 @@
 		48174A1025B92058007FC5D5 /* fmacros.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = fmacros.h; sourceTree = "<group>"; };
 		48174A1225B96194007FC5D5 /* adlist.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = adlist.c; sourceTree = "<group>"; };
 		48174A1325B96194007FC5D5 /* adlist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = adlist.h; sourceTree = "<group>"; };
+		48EC0CF425C009C500F2774A /* sds.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = sds.h; sourceTree = "<group>"; };
+		48EC0CF525C009C500F2774A /* sds.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = sds.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +82,8 @@
 		481749EC25B91B9D007FC5D5 /* anetlib */ = {
 			isa = PBXGroup;
 			children = (
+				48EC0CF525C009C500F2774A /* sds.c */,
+				48EC0CF425C009C500F2774A /* sds.h */,
 				48174A1225B96194007FC5D5 /* adlist.c */,
 				48174A1325B96194007FC5D5 /* adlist.h */,
 				48174A1025B92058007FC5D5 /* fmacros.h */,
@@ -156,6 +161,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				48EC0CF625C009C500F2774A /* sds.c in Sources */,
 				48174A0A25B91D6E007FC5D5 /* anet.c in Sources */,
 				48174A0425B91BEE007FC5D5 /* zmalloc.c in Sources */,
 				48174A1425B96194007FC5D5 /* adlist.c in Sources */,

@@ -5,7 +5,7 @@ LINUX=Linux
 MACOS=Darwin
 
 PROG=anetlib
-SRC=zmalloc.c netlib.c main.c anet.c ae.c adlist.c
+SRC=zmalloc.c netlib.c main.c anet.c ae.c adlist.c sds.c
 
 ifeq ($(TARGET_ARCH), $(MACOS))
 	SRC += ae_kqueue.c

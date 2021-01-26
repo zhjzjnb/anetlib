@@ -74,7 +74,7 @@ sds sdsnewlen(const void *init, size_t initlen) {
         sh = zmalloc(sizeof(struct sdshdr)+initlen+1);
     } else {
         // zcalloc 将分配的内存全部初始化为 0
-        sh = zcalloc(sizeof(struct sdshdr)+initlen+1);
+        sh = zcalloc1(sizeof(struct sdshdr)+initlen+1);
     }
 
     // 内存分配失败，返回
