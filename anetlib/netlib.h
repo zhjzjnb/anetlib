@@ -12,10 +12,15 @@
 #include <stdarg.h>
 #include <errno.h>
 #include <netinet/in.h>
+#include <stdbool.h>
+#include <signal.h>
+#include <execinfo.h>
 
 #include "ae.h"
 #include "anet.h"
 #include "adlist.h"
+#include "zmalloc.h"
+#include "sds.h"
 
 #define REDIS_OK                0
 #define REDIS_ERR               -1
@@ -55,14 +60,23 @@
 typedef struct redisClient redisClient;
 
 typedef void aeNewClientProc(redisClient *c);
+typedef bool aeCheckNewClient(int fd);
+typedef void aeCloseClient(redisClient *c);
+typedef void aeSignalCallback();
 typedef struct redisClient {
     // 套接字描述符
     int fd;
-    char querybuf[REDIS_IOBUF_LEN];
-    
-    char buf[REDIS_REPLY_CHUNK_BYTES];
+
+    size_t nread;
+
+    //recv and send buff malloc in aeNewClientProc
+    // free in aeCloseClient
+    char *querybuf;
+    char *buf;
+
     int sentlen;
     int bufpos;
+    void *ud;
 } redisClient;
 
 
@@ -100,6 +114,9 @@ struct redisServer {
     aeNewClientProc *newClientProc;
     aeFileProc *readProc;
     aeFileProc *writeProc;
+    aeCheckNewClient *checkNewClient;
+    aeCloseClient *closeClient;
+    aeSignalCallback *signalCallback;
 };
 
 
@@ -115,12 +132,13 @@ void redisLog(int level, const char *fmt, ...);
 #endif
 
 void redisLogRaw(int level, const char *msg);
-void processInputBuffer(redisClient *c);
+
 redisClient *createClient(int fd);
 void freeClient(redisClient *c);
 void acceptTcpHandler(aeEventLoop *el, int fd, void *privdata, int mask);
-void readQueryFromClient(aeEventLoop *el, int fd, void *privdata, int mask);
-void sendReplyToClient(aeEventLoop *el, int fd, void *privdata, int mask);
+void setupSignalHandlers(void);
+
+
 extern struct redisServer server;
 
 #endif /* netlib_h */
